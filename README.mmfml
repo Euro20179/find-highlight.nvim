@@ -1,7 +1,7 @@
                                = Find Highlight =
 --------------------------------------------------------------------------------
     An extremely simple plugin that provides a couple of functions
-    to find the next/previous position of a highlight.
+    to find the next/previous position of a *treesitter* highlight.
 
     <api>
     >lua
