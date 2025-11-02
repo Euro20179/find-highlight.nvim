@@ -1,0 +1,23 @@
+                               = Find Highlight =
+--------------------------------------------------------------------------------
+    An extremely simple plugin that provides a couple of functions
+    to find the next/previous position of a highlight.
+
+    <api>
+    >lua
+    -- find position of hlgroup AFTER startLine
+    nexthl(hlgroup, startLine) -> (integer, integer, integer, integer);
+
+    -- find position of hlgroup BEFORE startLine
+    prevhl(hlgroup, startLine) -> (integer, integer, integer, integer);
+
+    -- both functions return:
+        -- (startLine, startCol, endLine, endCol)
+    <
+
+    <usage>
+    >lua
+    local findHL = require"find-highlight"
+    findHL.nexthl(...)
+    findHL.prevhl(...)
+    <
