@@ -12,7 +12,7 @@ local function ckTSNode(node, startLine, hlgroup, reverse)
         local sr, sc, er, ec = vim.treesitter.get_node_range(node)
         if reverse and sr > startLine then
             return false
-        elseif not reverse and er < startLine then
+        elseif not reverse and sr < startLine then
             return false
         end
 
