@@ -5,11 +5,11 @@
 
     <api>
     >lua
-    -- find position of hlgroup AFTER startLine
-    nexthl(hlgroup, startLine) -> (integer, integer, integer, integer);
+    -- find position of hlgroup AFTER startLine and AFTER (startLine, startCol)
+    nexthl(hlgroup, startLine, startCol?) -> (integer, integer, integer, integer);
 
-    -- find position of hlgroup BEFORE startLine
-    prevhl(hlgroup, startLine) -> (integer, integer, integer, integer);
+    -- find position of hlgroup BEFORE startLine and BEFORE (startLine, startCol)
+    prevhl(hlgroup, startLine, startCol?) -> (integer, integer, integer, integer);
 
     -- both functions return:
         -- (startLine, startCol, endLine, endCol)

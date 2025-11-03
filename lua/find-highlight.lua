@@ -1,18 +1,19 @@
 local M = {}
 
 ---@param node TSNode
----@param startLine integer
+---@param startRow integer
+---@param startCol integer
 ---@param hlgroup string
 ---@param reverse boolean?
 ---@return TSNode|false
-local function ckTSNode(node, startLine, hlgroup, reverse)
+local function ckTSNode(node, startRow, startCol, hlgroup, reverse)
     reverse = reverse or false
 
     if node:child_count() == 0 then
         local sr, sc, er, ec = vim.treesitter.get_node_range(node)
-        if reverse and sr > startLine then
+        if reverse and (sr > startRow or (sr == startRow and sc > startCol)) then
             return false
-        elseif not reverse and sr < startLine then
+        elseif not reverse and (sr < startRow or (sr == startRow and sc < startCol)) then
             return false
         end
 
@@ -36,7 +37,7 @@ local function ckTSNode(node, startLine, hlgroup, reverse)
             c = node:child(i)
         end
         if c ~= nil then
-            local n = ckTSNode(c, startLine, hlgroup, reverse)
+            local n = ckTSNode(c, startRow, startCol, hlgroup, reverse)
             if n ~= false then
                 return n
             end
@@ -47,7 +48,10 @@ end
 
 ---@param hlgroup string
 ---@param startLine integer
-function M.nexthl(hlgroup, startLine)
+---@param startCol integer?
+function M.nexthl(hlgroup, startLine, startCol)
+    startCol = startCol or 0
+
     local p = vim.treesitter.get_parser(0, "mmfml", {})
     if p == nil then
         vim.notify("Unable to get treesitter parser for buffer", vim.log.levels.ERROR, {})
@@ -61,7 +65,7 @@ function M.nexthl(hlgroup, startLine)
     end
 
     for _, tree in pairs(trees) do
-        local node = ckTSNode(tree:root(), startLine - 1, hlgroup)
+        local node = ckTSNode(tree:root(), startLine - 1, startCol - 1, hlgroup)
         if node ~= false then
             return vim.treesitter.get_node_range(node)
         end
@@ -70,7 +74,12 @@ function M.nexthl(hlgroup, startLine)
     return nil
 end
 
-function M.prevhl(hlgroup, startLine)
+---@param hlgroup string
+---@param startLine integer
+---@param startCol integer?
+function M.prevhl(hlgroup, startLine, startCol)
+    startCol = startCol or 0
+
     local p = vim.treesitter.get_parser(0, "mmfml", {})
     if p == nil then
         vim.notify("Unable to get treesitter parser for buffer", vim.log.levels.ERROR, {})
@@ -84,7 +93,7 @@ function M.prevhl(hlgroup, startLine)
     end
 
     for _, tree in pairs(trees) do
-        local node = ckTSNode(tree:root(), startLine - 1, hlgroup, true)
+        local node = ckTSNode(tree:root(), startLine - 1, startCol, hlgroup, true)
         if node ~= false then
             return vim.treesitter.get_node_range(node)
         end
